@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@using System.Text.Json
+@model UserDisplayData
+
+
+<div class="text-center flex-row">
+    <div style="display: flex; flex-direction: row">
+        @foreach (var resource in Model.Resources)
+        {
+            <div style="display: flex; flex-direction: column; margin-left: 42px">
+                @{
+                    var options = new JsonSerializerOptions
+                    {
+                        IncludeFields = true, 
+                        WriteIndented = true
+                    };
+                    var userDisplayData = new UserDisplayData(Model.Resources, "Student", resource.Subject, Model.PublicKey, Model.PrivateKey);
+                    var userDataSerialized = JsonSerializer.Serialize(userDisplayData, options);
+                }
+                <div>@resource.Subject</div>
+                @foreach (var group in Model.Resources.FirstOrDefault(r => r.Subject == @resource.Subject)!.Groups!)
+                {
+                    @if (Model.Role == "Student")
+                    {
+                        <a asp-controller="Student" asp-action="Index" asp-route-userData="@userDataSerialized">@group</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Teacher" asp-action="Index" asp-route-resource="@userDisplayData.SelectedResource">@group</a>
+                    }
+                }
+            </div>
+        }
+    </div>
+    <a asp-controller="Login" asp-action="SignOut">Выйти</a>
+</div>

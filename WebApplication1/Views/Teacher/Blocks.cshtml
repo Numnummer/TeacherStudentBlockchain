@@ -1,0 +1,31 @@
+@model WebApplication1.Models.Blockchain.BlockDisplayInfo[]
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+<div>
+    @if (Model != null)
+    {
+        @foreach (var block in Model)
+        {
+            <div style="display: flex; flex-direction: row">
+                <div>@block.Hash</div>
+                <div style="margin-left: 20px">@block.CreatedAt</div>
+                <div style="margin-left: 20px">@block.OwnerId</div>
+                <div style="margin-left: 20px">@block.FilePath</div>
+            </div>
+        }
+    }
+    else
+    {
+        <div>Нет решений</div>
+    }
+    
+</div>
+</body>
+</html>
