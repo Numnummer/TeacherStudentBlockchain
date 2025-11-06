@@ -28,4 +28,6 @@ public class UserDisplayData
     public RSAParameters PrivateKey { get; set; }
     public string PrivateKeySerialized { get; set; }
     public IFormFile File { get; set; }
+    public string CaptchaAnswer { get; set; }
+    public bool IsCaptchaInvalid { get; set; }
 }

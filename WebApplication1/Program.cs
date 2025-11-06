@@ -10,6 +10,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie();
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IBlockchainService, BlockchainService>();
+builder.Services.AddSingleton<ICaptchaService, CaptchaService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,6 +21,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();

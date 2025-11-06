@@ -1,27 +1,29 @@
 @model UserDisplayData
+
+@{
+    Layout = null;
+}
+
 <!DOCTYPE html>
 
 <html>
 <head>
-    <title>Student</title>
+    <title>title</title>
 </head>
 <body>
 <div>
-    <form asp-action="Captcha" method="post" enctype="multipart/form-data">
-        <label>@Model.Role</label>
+    <img src="~/captcha.png" alt="asd"/>
+    <form asp-action="Index" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="SelectedResource"/>
         <input type="hidden" asp-for="PublicKey"/>
         <input type="hidden" asp-for="PublicKeySerialized"/>
         <input type="hidden" asp-for="PrivateKey"/>
         <input type="hidden" asp-for="PrivateKeySerialized"/>
         <input type="hidden" asp-for="Id"/>
-        <input type="file" accept="*/*.zip" name="File" asp-for="File"/>
+        <input type="hidden" asp-for="File"/>
+        <input type="text" name="CaptchaAnswer" asp-for="CaptchaAnswer"/>
         <button type="submit">Отправить</button>
     </form>
-    @if (Model.IsCaptchaInvalid)
-    {
-        <label>Неверный ответ на задачу</label>
-    }
 </div>
 </body>
 </html>
