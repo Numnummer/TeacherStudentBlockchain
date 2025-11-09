@@ -1,12 +1,19 @@
 using System.Security.Cryptography;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Options;
 
 namespace WebApplication1.Models.Blockchain;
 
 public class FilesBlockchain
 {
-    private readonly List<Block> _blocks = [];
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+    public List<Block> Blocks { get; set; } = [];
     private const byte Difficulty = 5;
-    private readonly Dictionary<Guid, RSAParameters> _publicKeys = new Dictionary<Guid, RSAParameters>();
+    [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfDocuments)]
+    private readonly Dictionary<string, RSAParameters> _publicKeys = new ();
 
     public bool CreateGenesisBlock()
     {
@@ -14,11 +21,11 @@ public class FilesBlockchain
         using var rsa = RSA.Create(2048);
         block.MineBlock(Difficulty, rsa.ExportParameters(true));
         if (!block.ValidateBlock(rsa.ExportParameters(false))) return false;
-        _blocks.Add(block);
+        Blocks.Add(block);
         return true;
     }
     
-    public Block LastBlock => _blocks[^1];
+    public Block? LastBlock => Blocks[^1];
 
     public bool AddBlock(Guid userId, string filePath, RSAParameters rsaPublicParameters, RSAParameters rsaPrivateParameters)
     {
@@ -26,29 +33,29 @@ public class FilesBlockchain
         var block=new Block(filePath, prevHash, userId);
         block.MineBlock(Difficulty, rsaPrivateParameters);
         if (!block.ValidateBlock(rsaPublicParameters)) return false;
-        _blocks.Add(block);
-        _publicKeys.TryAdd(userId, rsaPublicParameters);
+        Blocks.Add(block);
+        _publicKeys.TryAdd(userId.ToString(), rsaPublicParameters);
         return true;
     }
 
     public bool Validate()
     {
-        for (int i = 1; i < _blocks.Count; i++)
+        for (int i = 1; i < Blocks.Count; i++)
         {
-            if(_blocks[i].PreviousHash != Block.BytesToHex(_blocks[i - 1].GetHash(_blocks[i-1].Nonce)))
+            if(Blocks[i].PreviousHash != Block.BytesToHex(Blocks[i - 1].GetHash(Blocks[i-1].Nonce)))
                 return false;
         }
 
-        return _blocks.All(block => block.ValidateBlock(_publicKeys[block.OwnerId]));
+        return Blocks.All(block => block.ValidateBlock(_publicKeys[block.OwnerId.ToString()]));
     }
 
     public BlockDisplayInfo[] GetBlocks()
     {
-        return _blocks.Select(b => new BlockDisplayInfo()
+        return Blocks.Select(b => new BlockDisplayInfo()
         {
             OwnerId = b.OwnerId,
             Hash = Block.BytesToHex(b.GetHash(b.Nonce)),
-            Id = b.Id,
+            Id = b.BlockId,
             CreatedAt = b.CreatedAt,
             FilePath = b.FilePath
         }).ToArray();

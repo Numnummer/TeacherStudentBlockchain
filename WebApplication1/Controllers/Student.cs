@@ -8,6 +8,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using WebApplication1.Models;
 using WebApplication1.Models.Blockchain;
+using WebApplication1.Models.Services;
 
 namespace WebApplication1.Controllers;
 
@@ -31,11 +32,11 @@ public class Student(IBlockchainService blockchainService,
     [HttpPost]
     public IActionResult Index(UserDisplayData user)
     {
-        if (!captchaService.ValidateCaptcha(user.CaptchaAnswer, user.Id))
+        /*if (!captchaService.ValidateCaptcha(user.CaptchaAnswer, user.Id))
         {
             user.IsCaptchaInvalid = true;
             return View(user);
-        }
+        }*/
         user.IsCaptchaInvalid = false;
         user.File=captchaService.GetFile(user.Id);
         captchaService.DeleteCaptcha(user.Id);

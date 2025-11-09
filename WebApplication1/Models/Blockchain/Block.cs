@@ -1,22 +1,35 @@
 using System.Security.Cryptography;
 using System.Text;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace WebApplication1.Models.Blockchain;
 
 public class Block
 {
-    public Guid Id { get; set; }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+    
+    [BsonRepresentation(BsonType.String)]
+    public Guid BlockId { get; set; }
+    
+    [BsonRepresentation(BsonType.String)]
     public Guid OwnerId { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? PreviousHash { get; set; }
     public string FilePath { get; set; }
+    
+    [BsonRepresentation(BsonType.Binary)]
     public byte[] DataSignature { get; set; }
+    
+    [BsonRepresentation(BsonType.Binary)]
     public byte[] HashSignature { get; set; }
     public ulong Nonce { get; set; }
 
     public Block(string filePath, string? previousHash, Guid ownerId)
     {
-        Id = Guid.NewGuid();
+        BlockId = Guid.NewGuid();
         Nonce = 0;
         FilePath = filePath;
         PreviousHash = previousHash;
