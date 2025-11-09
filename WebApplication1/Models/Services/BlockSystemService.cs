@@ -14,7 +14,6 @@ public class BlockSystemService
         var client = new MongoClient(resourcesOptions.CurrentValue.ConnectionString);
         var database = client.GetDatabase(resourcesOptions.CurrentValue.DatabaseName);
         _resourcesCollection = database.GetCollection<Resource>(resourcesOptions.CurrentValue.CollectionName);
-        
     }
     
     public async Task<Resource?> GetResourceAsync(string subject)
@@ -32,5 +31,16 @@ public class BlockSystemService
         var options = new ReplaceOptions { IsUpsert = true };
         
         await _resourcesCollection.ReplaceOneAsync(filter, resource, options);
+    }
+
+    public async Task<Block?> GetBlockByIdAsync(string blockId)
+    {
+        var filter = Builders<Resource>.Filter.ElemMatch(
+            r => r.FilesBlockchain.Blocks,
+            b => b.Id == blockId
+        );
+
+        var resource = await _resourcesCollection.Find(filter).FirstOrDefaultAsync();
+        return resource?.FilesBlockchain?.Blocks?.FirstOrDefault(b => b.Id == blockId);
     }
 }

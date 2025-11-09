@@ -16,8 +16,8 @@
             <div style="display: flex; flex-direction: row">
                 <div>@block.Hash</div>
                 <div style="margin-left: 20px">@block.CreatedAt</div>
-                <div style="margin-left: 20px">@block.OwnerId</div>
-                <div style="margin-left: 20px">@block.FilePath</div>
+                <div style="margin-left: 20px">@block.BlockId</div>
+                <a asp-action="GetFile" asp-route-blockId="@block.BlockId" style="margin-left: 20px">@block.FilePath</a>
             </div>
         }
     }

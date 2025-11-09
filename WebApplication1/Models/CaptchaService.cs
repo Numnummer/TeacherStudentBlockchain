@@ -3,7 +3,7 @@ namespace WebApplication1.Models;
 public class CaptchaService : ICaptchaService
 {
     private readonly List<Captcha> _pendingCaptchaList = [];
-    public Captcha GenerateCaptcha(Guid userId, IFormFile userFile)
+    public Captcha GenerateCaptcha(Guid userId, IFormFile userFile, byte[] fileContent)
     {
         var random = new Random();
         var a=random.Next(1, 1000);
@@ -15,7 +15,8 @@ public class CaptchaService : ICaptchaService
             SessionId = Guid.NewGuid(),
             Answer = answer.ToString(),
             Problem = $"{a} + {b} = ",
-            UserFile = userFile
+            UserFile = userFile,
+            FileContent = fileContent,
         };
         _pendingCaptchaList.Add(captcha);
         return captcha;
@@ -31,6 +32,12 @@ public class CaptchaService : ICaptchaService
     {
         var captcha = _pendingCaptchaList.FirstOrDefault(x => x.UserId == userId);
         return captcha?.UserFile;
+    }
+
+    public byte[]? GetFileContent(Guid userId)
+    {
+        var captcha = _pendingCaptchaList.FirstOrDefault(x => x.UserId == userId);
+        return captcha?.FileContent;
     }
 
     public void DeleteCaptcha(Guid userId)

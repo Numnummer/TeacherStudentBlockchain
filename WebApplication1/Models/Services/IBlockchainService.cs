@@ -4,6 +4,6 @@ namespace WebApplication1.Models.Services;
 
 public interface IBlockchainService
 {
-    Task AddBlock(UserDisplayData user);
+    Task AddBlock(UserDisplayData user, byte[] fileBytes);
     Task<BlockDisplayInfo[]?> GetBlocks(string subject);
 }

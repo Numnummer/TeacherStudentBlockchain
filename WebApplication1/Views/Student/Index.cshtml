@@ -20,7 +20,11 @@
     </form>
     @if (Model.IsCaptchaInvalid)
     {
-        <label>Неверный ответ на задачу</label>
+        <label style="color: red">Неверный ответ на задачу</label>
+    }
+    else if (Model.IsTaskUploaded)
+    {
+        <label style="color: green">Решение @Model.File.FileName загружено</label>
     }
 </div>
 </body>

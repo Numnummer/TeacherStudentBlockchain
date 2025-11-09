@@ -30,4 +30,5 @@ public class UserDisplayData
     public IFormFile File { get; set; }
     public string CaptchaAnswer { get; set; }
     public bool IsCaptchaInvalid { get; set; }
+    public bool IsTaskUploaded { get; set; }
 }

@@ -20,6 +20,9 @@ public class Block
     public string? PreviousHash { get; set; }
     public string FilePath { get; set; }
     
+    [BsonElement("FileBson")]
+    public byte[] FileContent { get; set; }
+    
     [BsonRepresentation(BsonType.Binary)]
     public byte[] DataSignature { get; set; }
     

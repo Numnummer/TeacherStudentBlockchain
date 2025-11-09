@@ -27,10 +27,11 @@ public class FilesBlockchain
     
     public Block? LastBlock => Blocks[^1];
 
-    public bool AddBlock(Guid userId, string filePath, RSAParameters rsaPublicParameters, RSAParameters rsaPrivateParameters)
+    public bool AddBlock(Guid userId, string filePath, RSAParameters rsaPublicParameters, RSAParameters rsaPrivateParameters, byte[] fileContent)
     {
         var prevHash = Block.BytesToHex(LastBlock.GetHash(LastBlock.Nonce));
         var block=new Block(filePath, prevHash, userId);
+        block.FileContent = fileContent;
         block.MineBlock(Difficulty, rsaPrivateParameters);
         if (!block.ValidateBlock(rsaPublicParameters)) return false;
         Blocks.Add(block);
@@ -57,7 +58,8 @@ public class FilesBlockchain
             Hash = Block.BytesToHex(b.GetHash(b.Nonce)),
             Id = b.BlockId,
             CreatedAt = b.CreatedAt,
-            FilePath = b.FilePath
+            FilePath = b.FilePath,
+            BlockId = b.Id
         }).ToArray();
     }
 }

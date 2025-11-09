@@ -7,4 +7,5 @@ public class Captcha
     public string? Problem { get; set; }
     public string? Answer { get; set; }
     public IFormFile? UserFile { get; set; }
+    public byte[] FileContent { get; set; }
 }
